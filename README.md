@@ -42,7 +42,7 @@ Update `.env` variables as follows:
 
 TIDB_DATABASE_URL=
 
-API_KEY=
+GEMINI_API_KEY=
 
 TIDB_HOST=
 
