@@ -15,17 +15,11 @@ from flask_restful import Resource, Api
 from flask import request, Response, jsonify, json, abort
 from flask_restful import Resource, Api
 from flask_cors import CORS
-from werkzeug.utils import secure_filename
 
 from tidb_vector.integrations import TiDBVectorClient
 from peewee import Model, MySQLDatabase, TextField, SQL
-import pymysql
-from pymysql import Connection
-from pymysql.cursors import DictCursor
 from tidb_vector.peewee import VectorField
 
-import convex
-from convex import ConvexClient
 
 from bs4 import BeautifulSoup
 
@@ -39,7 +33,6 @@ from config import Config
 from dotenv import load_dotenv
 dotenv_path = Path("./.env")
 load_dotenv(dotenv_path=dotenv_path)
-from pprint import pprint
 
 
 app = Flask(__name__)
@@ -47,12 +40,12 @@ api = Api(app, prefix="/api")
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-genai.configure(api_key=os.environ.get("API_KEY"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-1.5-flash")
 embedding_model = "models/text-embedding-004"
 embedding_dimensions = 768
 
-print(os.environ.get("API_KEY"))
+
 
 def get_db_engine():
     config = Config()
@@ -136,21 +129,29 @@ class NewDocumentEmbeddings(Resource):
 
         embeddings = genai.embed_content(
             model=embedding_model, content=documents, task_type="retrieval_document"
-        )
+        )        
         
-        
-        vector_store = TiDBVectorClient(
-            table_name="HealthDataset",
-            connection_string=os.environ.get("TIDB_DATABASE_URL"),
-            vector_dimension=768,
-        )
-        
-        vector_store.insert(
-            id=uuid.uuid4(),
-            texts=documents,
-            embeddings=embeddings["embedding"],
-            metadatas=request.form.get('topic')
-        )
+        class DocModel(Model):
+                document = TextField()
+                embedding = VectorField(dimensions=embedding_dimensions)
+
+                class Meta:
+                    database = db
+                    table_name = "HealthDataset"
+
+                    def __str__(self):
+                        return self.document
+
+        db.connect()
+        db.drop_tables([DocModel])
+        db.create_tables([DocModel])
+
+        data_source = [
+            {"document": doc, "embedding": emb}
+            for doc, emb in zip(documents, embeddings["embedding"])
+        ]
+
+        DocModel.insert_many(data_source).execute()
 
         return jsonify(response="Document is AI Ready!!!")
 
@@ -166,14 +167,26 @@ class Prompt(Resource):
             model=embedding_model, content=[query], task_type="retrieval_query"
         )["embedding"][0]
 
-        vector_store = TiDBVectorClient(
-            table_name="HealthDataset",
-            connection_string=os.environ.get("TIDB_DATABASE_URL"),
-            vector_dimension=768,
-        )
-        
+        class DocModel(Model):
+            document = TextField()
+            embedding = VectorField(dimensions=len(query_embeddings))
 
-        related_docs = vector_store.query(query_embeddings)
+            class Meta:
+                database = db
+                table_name = "HealthDataset"
+
+            def __str__(self):
+                return self.document
+
+        related_docs = (
+            DocModel.select(
+                DocModel.document,
+                DocModel.embedding.cosine_distance(query_embeddings).alias("distance"),
+            )
+            .order_by(SQL("distance"))
+            .limit(3)
+        )
+
         docs = []
 
         for doc in related_docs:
@@ -208,14 +221,26 @@ class Chat(Resource):
             model=embedding_model, content=[query], task_type="retrieval_query"
         )["embedding"][0]
 
-        vector_store = TiDBVectorClient(
-            table_name="HealthDataset",
-            connection_string=os.environ.get("TIDB_DATABASE_URL"),
-            vector_dimension=768,
-        )
-        
+        class DocModel(Model):
+            document = TextField()
+            embedding = VectorField(dimensions=len(query_embeddings))
 
-        related_docs = vector_store.query(query_embeddings)
+            class Meta:
+                database = db
+                table_name = "HealthDataset"
+
+            def __str__(self):
+                return self.document
+
+        related_docs = (
+            DocModel.select(
+                DocModel.document,
+                DocModel.embedding.cosine_distance(query_embeddings).alias("distance"),
+            )
+            .order_by(SQL("distance"))
+            .limit(3)
+        )
+
         docs = []
 
         for doc in related_docs:
