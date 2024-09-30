@@ -1,0 +1,30 @@
+<section class="container-fluid">
+  <ng-template mat-tab-label>
+    <span class="m-2 p-2">
+      <mat-icon color="accent" class="material-symbols-outlined pr-2">category</mat-icon>
+     My Posts
+    </span>
+  </ng-template>
+  <mat-divider></mat-divider>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-list class="list-group" *ngIf="Posts">
+        <mat-list-item class="list-group-item d-flex" *ngFor="let post of Posts">
+          <button matListItemIcon mat-icon-button color="accent" class="text-white">
+            <a routerLink="/blog/edit/{{ post._id }}">
+              <mat-icon class="material-symbols-outlined">edit</mat-icon>
+            </a>
+          </button>
+
+          <div matListItemTitle>{{ post.title }}</div>
+
+          <div matListItemLine>
+            {{ post.intro }}
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+</section>

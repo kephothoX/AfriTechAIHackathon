@@ -1,0 +1,30 @@
+<section class="container-fluid">
+  <!-- <div class="mat-elevation-z8 card-group flex-row" *ngIf="Posts">
+    <mat-card class="mat-elevation-z6 card m-2" *ngFor="let post of Posts">
+      <mat-card-header>
+          <h2 class="fs-3 text-primary align-center">{{ post.title }}</h2>
+        </mat-card-header>
+      <mat-card-content> -->
+
+        <!--<a routerLink="/posts/view/{{ post._id}}">
+          <img  src="{{ post.postThumbnailURL }}" alt="AfiaPlus AI" class="rounded mx-auto d-block card-img-top" />
+         </a> -->
+        <!-- <div class="card-body">
+          <p class="card-text article" [innerHTML]="post.intro"></p>
+         </div>
+      </mat-card-content>
+
+    </mat-card>
+  </div> -->
+
+  <mat-card *ngIf="!Posts">
+    <mat-progress-bar mode="buffer" color="primary"></mat-progress-bar>
+    <h2>Coming Soon.....</h2>
+  </mat-card>
+
+  <a routerLink="/blog/new" class="floating-btn">
+    <button mat-fab color="accent"  class="text-white mat-elevation-z8" aria-label="Add New Post">
+        <mat-icon class="material-symbols-outlined">add</mat-icon>
+    </button>
+  </a>
+</section>

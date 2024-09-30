@@ -1,0 +1,49 @@
+<section class="container-fluid">
+  <mat-card class="mat-elevation-z6 card">
+    <mat-card-content>
+
+       <mat-card-footer *ngIf="!Post">
+        <mat-progress-bar mode="buffer" color="primary"></mat-progress-bar>
+        <h2 class="fs-2 text-accent">Loading Post.......</h2>
+      </mat-card-footer>
+      <form [formGroup]="updatePostForm" class="mat-elevation-z4 centered form col-lg-6 col-md-12 col-sm-12" *ngIf="Post">
+
+        <mat-form-field appearance="fill" class="p-1  form-control">
+          <mat-label>Post Title </mat-label>
+          <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+          <mat-hint align="end">Post Title</mat-hint>
+          <input type="text" matInput formControlName="title" [(ngModel)]="Post.title">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="p-1  form-control">
+          <mat-label>Content</mat-label>
+          <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+          <mat-hint align="end">Post Content</mat-hint>
+          <textarea matInput formControlName="content" [(ngModel)]="Post.content"></textarea>
+        </mat-form-field>
+
+
+        <mat-divider></mat-divider>
+
+        <button mat-raised-button class="p-1">
+          <mat-icon class="material-symbols-outlined">attachment</mat-icon>
+          <input type="file" formControlName="newFile" id="attachments" (change)="onFileChange($event)" accept="image/*"
+            #newFile />
+        </button>
+
+
+        <mat-card-actions class="align-buttons-center">
+          <button type="submit" mat-raised-button color="primary" (click)="ngOnSubmitPost()"
+            [disabled]="!updatePostForm.valid"><mat-icon
+              class="material-symbols-outlined">update</mat-icon>Update Post</button>
+          <button type="reset" mat-raised-button color="warn"><mat-icon
+              class="material-symbols-outlined">cancel</mat-icon>Clear</button>
+        </mat-card-actions>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-divider></mat-divider>
+</section>
+

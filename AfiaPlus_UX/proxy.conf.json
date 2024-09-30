@@ -1,0 +1,7 @@
+{
+    "/api/*":
+    {
+        "target": "https://abundant-perch-395.convex.site",
+        "secure": false
+    }
+}

@@ -1,0 +1,103 @@
+<section class="container-fluid">
+  <mat-stepper orientation="vertical" class="mat-elevation-z6" #stepper>
+    <mat-step [stepControl]="uploadFileForm">
+      <form [formGroup]="uploadFileForm" class="mat-elevation-z4 centered form col-lg-6 col-md-12 col-sm-12">
+        <ng-template matStepLabel>
+          <h2 class="fs-2 text-primary">
+            <mat-icon class="material-symbols-outlined">upload</mat-icon>
+            Upload Your Document
+          </h2>
+        </ng-template>
+        <button mat-raised-button class="p-1">
+          <mat-icon class="material-symbols-outlined">attachment</mat-icon>
+          <input type="file" id="attachments" (change)="onFileChange($event)"
+            accept="pdf, .txt, .doc, .xls, .xlsx, .docx, .html" #newFile />
+        </button>
+
+        <mat-card-actions class="align-buttons-center">
+          <button type="submit" mat-raised-button color="primary" [disabled]=DisableFileUploadForm
+            (click)="uploadFile()" matStepperNext><mat-icon class="material-symbols-outlined">upload</mat-icon>Upload
+            File</button>
+          <button type="reset" mat-raised-button color="warn"><mat-icon
+              class="material-symbols-outlined">cancel</mat-icon>Clear</button>
+        </mat-card-actions>
+        <div class="spacer"></div>
+
+        <div>
+          <small class="text-warn">Describe File in the next section.</small>
+
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="newFileMetadataForm">
+      <ng-template matStepLabel>
+        <h2 class="fs-2 text-primary">
+          <mat-icon class="material-symbols-outlined">update</mat-icon>
+          Describe Document
+        </h2>
+      </ng-template>
+      <mat-card-footer *ngIf="!FileStorageID">
+        <mat-progress-bar mode="buffer" color="primary"></mat-progress-bar>
+        <h2 class="fs-2 text-accent">Uploading File... This could take a moment.</h2>
+      </mat-card-footer>
+      <form [formGroup]="newFileMetadataForm" class="mat-elevation-z4 centered form col-lg-6 col-md-10 col-sm-12"
+        *ngIf="FileStorageID">
+
+
+        <mat-form-field appearance="fill" class="p-1  form-control">
+          <mat-label>About File</mat-label>
+          <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+          <mat-hint align="end">About Document</mat-hint>
+          <textarea matInput formControlName="aboutFile" placeholder="Context Document"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="p-1  form-control">
+          <mat-label>Filename's Name </mat-label>
+          <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+          <mat-hint align="end">Name Of The File</mat-hint>
+          <input type="text" matInput formControlName="filename" placeholder="Context Document">
+        </mat-form-field>
+
+        <mat-divider></mat-divider>
+
+
+        <mat-card-actions class="align-buttons-center">
+          <button type="submit" mat-raised-button color="primary" (click)="addFileMetaData()"
+            [disabled]="!newFileMetadataForm.valid" matStepperNext><mat-icon
+              class="material-symbols-outlined">upload</mat-icon>Upload</button>
+          <button type="reset" mat-raised-button color="warn"><mat-icon
+              class="material-symbols-outlined">cancel</mat-icon>Clear</button>
+        </mat-card-actions>
+
+      </form>
+
+
+
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>
+        <h2 class="fs-2 text-primary">
+          <mat-icon class="material-symbols-outlined">cognition</mat-icon>
+          Generating Embeddings
+        </h2>
+      </ng-template>
+      <mat-card-footer *ngIf="!Response">
+        <mat-progress-bar mode="buffer" color="warn"></mat-progress-bar>
+        <h2 class="fs-s text-warn">Getting Document Ready for AI ... This could take a moment.</h2>
+      </mat-card-footer>
+
+      <div>
+        <button mat-raised-button color="accent" matStepperPrevious class="text-white">
+          <mat-icon class="material-symbols-outlined">undo</mat-icon>
+          Go Back
+        </button>
+        <button mat-raised-button color="warn" (click)="stepper.reset()" class="text-white">
+          <mat-icon class="material-symbols-outlined">clear</mat-icon>
+          Reset
+        </button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+  <mat-divider></mat-divider>
+</section>

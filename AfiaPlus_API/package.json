@@ -1,0 +1,31 @@
+{
+  "name": "AfiaPlus-api",
+  "version": "1.0.0",
+  "description": "AfiaPlus Convex API",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/kephotho"
+  },
+  "keywords": [
+    "Kephotho"
+  ],
+  "author": "Kephotho Solutions",
+  "license": "MIT",
+  "dependencies": {
+    "@auth/core": "^0.34.2",
+    "@convex-dev/auth": "^0.0.61",
+    "@google/generative-ai": "^0.17.1",
+    "convex": "^1.15.0",
+    "convex-helpers": "^0.1.52",
+    "dotenv": "^16.4.5",
+    "string-strip-html": "^13.4.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.1",
+    "typescript": "5.5.4"
+  }
+}

@@ -1,0 +1,6 @@
+
+.env.local
+process.env
+node_modules/
+dist/*
+!dist/.gitkeep

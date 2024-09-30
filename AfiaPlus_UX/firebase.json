@@ -1,0 +1,40 @@
+{
+  "functions": {
+      "codebase": "functions"
+    },
+
+  "emulators": {
+    "firestore": {
+      "port": 13080
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "auth": {
+      "port": 7080
+    },
+    "functions": {
+      "port": 5080
+    },
+    "database": {
+      "port": 6080
+    },
+    "hosting": {
+      "port": 10080
+    },
+    "pubsub": {
+      "port": 11080
+    }
+  },
+
+  "hosting": {
+    "public": "dist/Ux",
+    "public": "dist/AfiaPlus_UX",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

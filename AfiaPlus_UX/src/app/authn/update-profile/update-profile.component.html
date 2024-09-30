@@ -1,0 +1,74 @@
+<section  class="container-fluid">
+    <mat-card class="mat-elevation-z6" *ngIf="User">
+        <mat-card-header class="centered">
+            <mat-card-title class="centered">
+                <h2>Update Profile</h2>
+            </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-subtitle class="mat-raised-z6 bg-whiter pb-4 mb-4">
+            <img mat-card-lg-image class="profile-pic" src="{{ User.image }}" alt="Zorille" />
+        </mat-card-subtitle>
+
+
+        <mat-card-content class="mat-raised-z4 pt-4 mt-4">
+            <form [formGroup]="updateUserForm" class="mat-elevation-z4 centered form col-lg-6 col-md-12 col-sm-12" enctype="multipart/form-data">
+                <mat-form-field appearance="fill" class="p-1 form-control">
+                    <mat-label>Email</mat-label>
+                    <mat-hint align="end">Valid Email Address</mat-hint>
+                    <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+                    <input type="email" email="true" matInput formControlName="email" [ngModel]="User.email">
+                </mat-form-field>
+
+                <div class="spacer"></div>
+
+                <mat-form-field appearance="fill" class="p-1 form-control">
+                    <mat-label>Name</mat-label>
+                    <mat-hint align="end">Your Name</mat-hint>
+                    <mat-icon matPrefix class="material-symbols-outlined">info</mat-icon>
+                    <input type="text" matInput formControlName="name" [ngModel]="User.name">
+                </mat-form-field>
+
+                <h5>Phone Number</h5>
+                <mat-form-field appearance="fill" class="p-1 form-control">
+                    <mat-label>Phone Number</mat-label>
+                    <mat-icon matPrefix class="material-symbols-outlined">phone</mat-icon>
+                    <mat-hint align="end"> Your Phone Number</mat-hint>
+                    <input type="text" matInput formControlName="phone" [ngModel]="User.phone">
+                </mat-form-field>
+
+                <h3>Set Profile Picture</h3>
+                <img src="{{ profileImageURL }}" mat-card-lg-image class="image-fluid d-block" alt="Profile Image To Be Uploaded" />
+                <button mat-raised-button class="p-1 form-control">
+                    <mat-icon class="material-symbols-outlined">attachment</mat-icon>
+                    <input type="file" id="attachments" (change)="onFileChange($event)" accept="image/*" />
+                </button>
+
+        <button mat-raised-button color="warn" class="text-white" (click)="removeAdImages()">
+          <mat-icon class="material-symbols-outlined">delete</mat-icon>
+          Remove Images
+        </button>
+
+
+                <mat-card-actions class="align-buttons-center">
+                    <button type="submit" mat-raised-button [disabled]="!updateUserForm.valid" (click)="ngOnSubmit()">
+                        <mat-icon class="material-symbols-outlined">update</mat-icon>
+                        Update Profile
+                    </button>
+
+                    <button type="reset" mat-raised-button color="warn" class="text-white" (click)="resetForm()">
+                        <mat-icon class="material-symbols-outlined">cancel</mat-icon>
+                        Clear
+                    </button>
+                </mat-card-actions>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</section>
+
+
+
+
+
+
+
