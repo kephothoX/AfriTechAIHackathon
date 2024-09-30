@@ -40,9 +40,6 @@ export class AppService {
     response: 'json'
   }
 
-
-
-  ConvexAPIEndpoint = environment.ConvexAPIEndpoint;
   PythonAPIEndpoint = environment.PythonAPIEndpoint;
 
 

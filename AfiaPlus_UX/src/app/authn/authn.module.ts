@@ -16,13 +16,10 @@ import { environment } from 'src/environments/environment.dev';
 import { AuthnRoutingModule } from './authn-routing.module';
 import { AuthnComponent } from './authn.component';
 
-import { UpdateProfileComponent } from './update-profile/update-profile.component';
-
 
 @NgModule({
   declarations: [
-    AuthnComponent,
-    UpdateProfileComponent
+    AuthnComponent
 
   ],
   imports: [
