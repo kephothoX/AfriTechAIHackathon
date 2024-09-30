@@ -12,7 +12,6 @@ const routes: Routes = [
    { path: '404', title: 'Error', redirectTo: '/error' },
   { path: 'error', loadChildren: () => import('./error/error.module').then(m => m.ErrorModule) },
   { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule) },
-  { path: 'blog', loadChildren: () => import('./blog/blog.module').then(m => m.BlogModule) },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'chat', loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule) },
   { path: 'diagnosis', loadChildren: () => import('./diagnosis/diagnosis.module').then(m => m.DiagnosisModule) },
