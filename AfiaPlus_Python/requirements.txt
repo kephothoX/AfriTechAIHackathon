@@ -13,3 +13,5 @@ beautifulsoup4
 peewee
 tidb-vector
 pymysql
+sqlalchemy
+mysqlclient
