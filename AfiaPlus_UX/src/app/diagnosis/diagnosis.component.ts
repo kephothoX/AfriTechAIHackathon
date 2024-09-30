@@ -69,8 +69,15 @@ export class DiagnosisComponent implements OnInit {
 
 
     this._appService.selfDiagnosis(this.formData).subscribe((res: any) => {
+      this.resetForm();
       this.PromptResponse = res.response;
     });
 
+  }
+
+
+
+  resetForm(): void {
+    this.newDiagnosisForm.reset();
   }
 }
