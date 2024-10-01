@@ -60,7 +60,7 @@ export class ChatComponent implements OnInit {
 
 
 
-    this._appService.chat(this.formData).subscribe((res: any) => {
+    this._appService.prompt(this.formData).subscribe((res: any) => {
       this.PromptResponse = res.response;
       this.PromptQuery = '';
 
