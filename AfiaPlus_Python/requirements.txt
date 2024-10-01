@@ -5,7 +5,6 @@ flask-cors
 python-dotenv
 flask-restful
 gunicorn
-convex
 pandas
 python-docx
 inscriptis
