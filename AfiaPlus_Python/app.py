@@ -143,7 +143,6 @@ class NewDocumentEmbeddings(Resource):
                         return self.document
 
         db.connect()
-        db.drop_tables([DocModel])
         db.create_tables([DocModel])
 
         data_source = [
@@ -158,60 +157,6 @@ class NewDocumentEmbeddings(Resource):
 
 
 api.add_resource(NewDocumentEmbeddings, "/embeddings/new")
-
-
-class Prompt(Resource):
-    def post(self):
-        query = request.form.get("prompt")
-        query_embeddings = genai.embed_content(
-            model=embedding_model, content=[query], task_type="retrieval_query"
-        )["embedding"][0]
-
-        class DocModel(Model):
-            document = TextField()
-            embedding = VectorField(dimensions=len(query_embeddings))
-
-            class Meta:
-                database = db
-                table_name = "HealthDataset"
-
-            def __str__(self):
-                return self.document
-
-        related_docs = (
-            DocModel.select(
-                DocModel.document,
-                DocModel.embedding.cosine_distance(query_embeddings).alias("distance"),
-            )
-            .order_by(SQL("distance"))
-            .limit(3)
-        )
-
-        docs = []
-
-        for doc in related_docs:
-            docs.append(doc.document)
-
-        db.close()
-        context = " ".join(docs)
-        
-        prompt = f"{ query } in this { context } context format answer as text"
-        
-        
-        chat = model.start_chat(
-            history=[
-                {"role": "user", "parts": "Hello"},
-                {"role": "model", "parts": "Great to meet you. What would you like to know?"},
-            ]
-        )
-        response = chat.send_message(prompt)
-
-      
-
-        return jsonify(response=InlineFormatting(response.text))
-
-
-api.add_resource(Prompt, "/prompt")
 
 
 class Chat(Resource):
@@ -249,7 +194,61 @@ class Chat(Resource):
         db.close()
         context = " ".join(docs)
         
-        prompt = f"{ query } on this { context } context and suggest follow up questions then format answer as text"
+        prompt = f"{ query } based on { context } format answer as text"
+        
+        
+        chat = model.start_chat(
+            history=[
+                {"role": "user", "parts": "Hello"},
+                {"role": "model", "parts": "Great to meet you. What would you like to know?"},
+            ]
+        )
+        response = chat.send_message(prompt)
+
+      
+
+        return jsonify(response=InlineFormatting(response.text))
+
+
+api.add_resource(Chat, "/chat")
+
+
+class Prompt(Resource):
+    def post(self):
+        query = request.form.get("prompt")
+        query_embeddings = genai.embed_content(
+            model=embedding_model, content=[query], task_type="retrieval_query"
+        )["embedding"][0]
+
+        class DocModel(Model):
+            document = TextField()
+            embedding = VectorField(dimensions=len(query_embeddings))
+
+            class Meta:
+                database = db
+                table_name = "HealthDataset"
+
+            def __str__(self):
+                return self.document
+
+        related_docs = (
+            DocModel.select(
+                DocModel.document,
+                DocModel.embedding.cosine_distance(query_embeddings).alias("distance"),
+            )
+            .order_by(SQL("distance"))
+            .limit(3)
+        )
+
+        docs = []
+
+        for doc in related_docs:
+            docs.append(doc.document)
+
+        db.close()
+        context = " ".join(docs)
+        
+        prompt = f"{ query } based on  { context }  and suggest follow up questions then format answer as text"
         
         
         response = model.generate_content(prompt)
@@ -258,7 +257,7 @@ class Chat(Resource):
         return jsonify(response=InlineFormatting(response.text))
 
 
-api.add_resource(Chat, "/chat")
+api.add_resource(Prompt, "/prompt")
 
 
 class SelfDiagnosis(Resource):
@@ -268,14 +267,26 @@ class SelfDiagnosis(Resource):
             model=embedding_model, content=[query], task_type="retrieval_query"
         )["embedding"][0]
 
-        vector_store = TiDBVectorClient(
-            table_name="HealthDataset",
-            connection_string=os.environ.get("TIDB_DATABASE_URL"),
-            vector_dimension=768,
-        )
-        
+        class DocModel(Model):
+            document = TextField()
+            embedding = VectorField(dimensions=len(query_embeddings))
 
-        related_docs = vector_store.query(query_embeddings)
+            class Meta:
+                database = db
+                table_name = "HealthDataset"
+
+            def __str__(self):
+                return self.document
+
+        related_docs = (
+            DocModel.select(
+                DocModel.document,
+                DocModel.embedding.cosine_distance(query_embeddings).alias("distance"),
+            )
+            .order_by(SQL("distance"))
+            .limit(3)
+        )
+
         docs = []
 
         for doc in related_docs:
@@ -284,7 +295,7 @@ class SelfDiagnosis(Resource):
         db.close()
         context = " ".join(docs)
         
-        prompt = f"given { query } and { context } as context, suggest a diagnosis for { request.form.get('name') } { request.form.get('gender') } born on {request.form.get('dob') }, with { request.form.get('pre_conditions') } weighing { request.form.get('weight') } in kgs, currently taking { request.form.get('medications') }, and provide follow up questions and  personalize and format answer as html"
+        prompt = f"given { query } symptoms, suggest a possible diagnosis for { request.form.get('name') } { request.form.get('gender') } born on {request.form.get('dob') }, with { request.form.get('pre_conditions') } weighing { request.form.get('weight') } in kgs, currently taking { request.form.get('medications') } based on { context } and provide follow up questions and  personalize and format answer as html"
         response = model.generate_content(prompt)
       
 
