@@ -63,3 +63,6 @@ For more on [TiDb Cloud manual documentation](https://docs.pingcap.com/tidbcloud
 ## Authorization && Authentication
 
 Update `./AfiaPlus_UX/src/environments` values with your own as they are subject to change.
+
+## Knowledge Base
+To add knowledge base or relevant community health, medical and reseach data go to `http://localhost:4201/admin/new` upload  your document as pdf, html, txt or docx for Retrieval Augmented Generation (RAG).
